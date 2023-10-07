@@ -1,0 +1,4 @@
+# Environment Varoable
+.env
+# Django
+db.sqlite3
