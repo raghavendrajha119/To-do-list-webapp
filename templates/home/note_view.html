@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note Details</title>
+</head>
+<body>
+    <h1>Note Details</h1>
+    <p><strong>Task:</strong> {{ note.Task }}</p>
+    <p><strong>Reminder:</strong> {{ note.Reminder }}</p>
+    <p><strong>Date:</strong> {{ note.Date }}</p>
+    <a href="{% url 'note_list' %}">Back to Notes</a>
+</body>
+</html>

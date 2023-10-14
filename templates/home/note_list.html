@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note List</title>
+</head>
+<body>
+    <h1>Notes</h1>
+
+<table border="1">
+<thead>
+    <tr>
+    <th>Task</th>
+    <th>Reminder</th>
+    <th>Date</th>
+    <th>New Note</th>
+    <th>View</th>
+    <th>Edit</th>
+    <th>Delete</th>
+    </tr>
+</thead>
+<tbody>
+    {% for note in object_list %}
+    <tr>
+    <td>{{note.Task}}</td>
+    <td>{{note.Reminder}}</td>
+    <td>{{note.Date}}</td>
+    <td><a href="{% url "note_new" %}">New</a></td>
+    <td><a href="{% url "note_view" note.id %}">view</a></td>
+    <td><a href="{% url "note_edit" note.id %}">edit</a></td>
+    <td><a href="{% url "note_delete" note.id %}">delete</a></td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+</body>
+</html>
