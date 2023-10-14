@@ -1,3 +1,4 @@
+from django import forms
 from django.shortcuts import render, redirect
 from datetime import datetime
 from home.models import Contact,Note
@@ -7,6 +8,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from plyer import notification
+from datetime import datetime
 # Create your views here.
 def index(request):
     print(request.user)
@@ -21,7 +24,6 @@ def registerUser(request):
             username=form.cleaned_data.get('username')
             password1=form.cleaned_data.get('password1') #for first time
             password2=form.cleaned_data.get('password2') #for check password again
-            print(username,password1)
             user=authenticate(username=username,password=password1)
             login(request,user)
             return redirect("/")
@@ -35,7 +37,6 @@ def loginUser(request):
     if request.method=="POST":
         username=request.POST.get('username')
         password=request.POST.get('password')
-        print(username,password)
         user= authenticate(username=username,password=password)
         if user is not None:
             login(request,user)
@@ -66,20 +67,49 @@ class NoteView(DetailView):
     template_name = 'home/note_view.html'
     def get_queryset(self):
         return Note.objects.filter(user=self.request.user)
+class NoteCreateForm(forms.ModelForm):
+    class Meta:
+        model = Note
+        fields = ['Priority','Task', 'Reminder', 'Date']
+        widgets = {
+            'Reminder': forms.TimeInput(attrs={'type': 'time'}),
+            'Date': forms.DateInput(attrs={'type': 'date'}),
+        }
 class NoteCreate(CreateView):
-    model=Note
+    form_class = NoteCreateForm
     template_name = 'home/note_new.html'
-    fields=['Task','Reminder','Date']
+    success_url = reverse_lazy('note_list')
     def form_valid(self,form):
         form.instance.user = self.request.user
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        check_task_reminder(form.instance)
+        return response
     success_url=reverse_lazy('note_list')
 class NoteUpdate(UpdateView):
     model = Note
     template_name='home/note_edit.html'
-    fields = ['Task', 'Reminder','Date']
+    fields = ['Priority','Task', 'Reminder','Date']
     success_url = reverse_lazy('note_list')
 class NoteDelete(DeleteView):
     model = Note
     template_name='home/note_delete.html'
     success_url = reverse_lazy('note_list')
+def send_desktop_notification(title, message):
+    notification.notify(
+        title=title,
+        message=message,
+        app_name='todolist',
+        timeout=10,
+    )
+# creating instance for notifcation
+def check_task_reminder(task):
+    current_time = datetime.now().time()
+    current_date = datetime.now().date()
+    print(task.Reminder,task.Date)
+    if task.Reminder and task.Date:
+        if current_date >= task.Date and current_time>=task.Reminder:
+            send_desktop_notification(
+                title=task.Task,
+                message=f"Task: {task.Task} is due now!"
+
+            )

@@ -11,6 +11,7 @@ class Note(models.Model):
     Task=models.CharField(max_length=100)
     Reminder=models.TimeField(blank=True)
     Date=models.DateField(blank=True)
+    Priority=models.IntegerField(default=1)
     def __str__(self):
         return self.Task
 class Contact(models.Model):

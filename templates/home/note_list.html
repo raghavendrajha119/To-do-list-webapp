@@ -1,16 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Note List</title>
-</head>
-<body>
-    <h1>Notes</h1>
+{% extends "../base.html" %}
+{% block title %}Note List{% endblock title %}
+{% block body %}
+<h1>Notes</h1>
+<div class="table-responsive">
 
-<table border="1">
+
+<table class="table table-striped table-sm">
 <thead>
     <tr>
+    <th>Priority</th>
     <th>Task</th>
     <th>Reminder</th>
     <th>Date</th>
@@ -23,6 +21,7 @@
 <tbody>
     {% for note in object_list %}
     <tr>
+    <td>{{note.Priority}}</td>
     <td>{{note.Task}}</td>
     <td>{{note.Reminder}}</td>
     <td>{{note.Date}}</td>
@@ -34,5 +33,5 @@
     {% endfor %}
 </tbody>
 </table>
-</body>
-</html>
+</div>
+{% endblock body %}
